@@ -1,0 +1,159 @@
+{
+  "name": "4ff019405c0a460e0261",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "x": 1056,
+        "y": 384,
+        "z": 3000,
+        "width": 192,
+        "height": 160,
+        "tabOrder": 1000
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "map",
+    "projections": {
+      "Y": [
+        {
+          "queryRef": "waqi api - blackwall.latitude"
+        }
+      ],
+      "X": [
+        {
+          "queryRef": "waqi api - blackwall.longitude"
+        }
+      ],
+      "Size": [
+        {
+          "queryRef": "Sum(waqi api - blackwall.no2)"
+        }
+      ]
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "w",
+          "Entity": "waqi api - blackwall",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "w"
+              }
+            },
+            "Property": "latitude"
+          },
+          "Name": "waqi api - blackwall.latitude",
+          "NativeReferenceName": "latitude"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "w"
+              }
+            },
+            "Property": "longitude"
+          },
+          "Name": "waqi api - blackwall.longitude",
+          "NativeReferenceName": "longitude"
+        },
+        {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "w"
+                  }
+                },
+                "Property": "no2"
+              }
+            },
+            "Function": 0
+          },
+          "Name": "Sum(waqi api - blackwall.no2)",
+          "NativeReferenceName": "Sum of no2"
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true,
+    "hasDefaultSort": true,
+    "objects": {
+      "mapStyles": [
+        {
+          "properties": {
+            "showLabels": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "bubbles": [
+        {
+          "properties": {
+            "bubbleSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "10L"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "dataPoint": [
+        {
+          "properties": {
+            "showAllDataPoints": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 4,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "vcObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

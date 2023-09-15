@@ -1,0 +1,178 @@
+{
+  "objects": {
+    "mapStyles": [
+      {
+        "properties": {
+          "showLabels": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "bubbles": [
+      {
+        "properties": {
+          "bubbleSize": {
+            "expr": {
+              "Literal": {
+                "Value": "10L"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "dataPoint": [
+      {
+        "properties": {
+          "showAllDataPoints": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          },
+          "fill": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "ThemeDataColor": {
+                    "ColorId": 4,
+                    "Percent": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "projectionOrdering": {
+    "Y": [
+      0
+    ],
+    "X": [
+      1
+    ],
+    "Size": [
+      2
+    ]
+  },
+  "queryMetadata": {
+    "Select": [
+      {
+        "Restatement": "latitude",
+        "Name": "waqi api - blackwall.latitude",
+        "Type": 1
+      },
+      {
+        "Restatement": "longitude",
+        "Name": "waqi api - blackwall.longitude",
+        "Type": 1
+      },
+      {
+        "Restatement": "Sum of no2",
+        "Name": "Sum(waqi api - blackwall.no2)",
+        "Type": 1
+      }
+    ]
+  },
+  "visualElements": [
+    {
+      "DataRoles": [
+        {
+          "Name": "Y",
+          "Projection": 0,
+          "isActive": false
+        },
+        {
+          "Name": "X",
+          "Projection": 1,
+          "isActive": false
+        },
+        {
+          "Name": "Size",
+          "Projection": 2,
+          "isActive": false
+        }
+      ]
+    }
+  ],
+  "selects": [
+    {
+      "displayName": "latitude",
+      "queryName": "waqi api - blackwall.latitude",
+      "roles": {
+        "Y": true
+      },
+      "type": {
+        "category": null,
+        "underlyingType": 259
+      },
+      "expr": {
+        "Column": {
+          "Expression": {
+            "SourceRef": {
+              "Entity": "waqi api - blackwall"
+            }
+          },
+          "Property": "latitude"
+        }
+      }
+    },
+    {
+      "displayName": "longitude",
+      "queryName": "waqi api - blackwall.longitude",
+      "roles": {
+        "X": true
+      },
+      "type": {
+        "category": null,
+        "underlyingType": 259
+      },
+      "expr": {
+        "Column": {
+          "Expression": {
+            "SourceRef": {
+              "Entity": "waqi api - blackwall"
+            }
+          },
+          "Property": "longitude"
+        }
+      }
+    },
+    {
+      "displayName": "Sum of no2",
+      "queryName": "Sum(waqi api - blackwall.no2)",
+      "roles": {
+        "Size": true
+      },
+      "sort": 2,
+      "sortOrder": 0,
+      "type": {
+        "category": null,
+        "underlyingType": 259
+      },
+      "expr": {
+        "Aggregation": {
+          "Expression": {
+            "Column": {
+              "Expression": {
+                "SourceRef": {
+                  "Entity": "waqi api - blackwall"
+                }
+              },
+              "Property": "no2"
+            }
+          },
+          "Function": 0
+        }
+      }
+    }
+  ]
+}

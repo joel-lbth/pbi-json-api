@@ -1,0 +1,978 @@
+table 'waqi api - blackwall'
+	lineageTag: 04e7f1d6-a38b-4d3a-84b0-f9dbce23537e
+	ordinal: 17
+
+	partition 'waqi api - blackwall' = M
+		mode: Import
+		expression:=
+			let
+			    Source = Json.Document(Web.Contents("https://api2.waqi.info/api/feed/@7948/aqi.json")),
+			    #"Converted to Table" = Table.FromRecords({Source}),
+			    #"Expanded rxs" = Table.ExpandRecordColumn(#"Converted to Table", "rxs", {"obs", "status", "ver"}, {"rxs.obs", "rxs.status", "rxs.ver"}),
+			    #"Expanded rxs.obs" = Table.ExpandListColumn(#"Expanded rxs", "rxs.obs"),
+			    #"Expanded rxs.obs1" = Table.ExpandRecordColumn(#"Expanded rxs.obs", "rxs.obs", {"msg", "status", "cached"}, {"rxs.obs.msg", "rxs.obs.status", "rxs.obs.cached"}),
+			    #"Expanded rxs.obs.msg" = Table.ExpandRecordColumn(#"Expanded rxs.obs1", "rxs.obs.msg", {"aqi", "idx", "attributions", "city", "dominentpol", "iaqi", "time", "obs", "forecast", "xsync"}, {"rxs.obs.msg.aqi", "rxs.obs.msg.idx", "rxs.obs.msg.attributions", "rxs.obs.msg.city", "rxs.obs.msg.dominentpol", "rxs.obs.msg.iaqi", "rxs.obs.msg.time", "rxs.obs.msg.obs", "rxs.obs.msg.forecast", "rxs.obs.msg.xsync"}),
+			    #"Expanded rxs.obs.msg.city" = Table.ExpandRecordColumn(#"Expanded rxs.obs.msg", "rxs.obs.msg.city", {"geo", "name", "url"}, {"rxs.obs.msg.city.geo", "rxs.obs.msg.city.name", "rxs.obs.msg.city.url"}),
+			    #"Extracted Values" = Table.TransformColumns(#"Expanded rxs.obs.msg.city", {"rxs.obs.msg.city.geo", each Text.Combine(List.Transform(_, Text.From), ","), type text}),
+			    #"Split Column by Delimiter" = Table.SplitColumn(#"Extracted Values", "rxs.obs.msg.city.geo", Splitter.SplitTextByDelimiter(",", QuoteStyle.Csv), {"rxs.obs.msg.city.geo.1", "rxs.obs.msg.city.geo.2"}),
+			    #"Renamed Columns" = Table.RenameColumns(#"Split Column by Delimiter",{{"rxs.obs.msg.city.geo.1", "latitude"}, {"rxs.obs.msg.city.geo.2", "longitude"}}),
+			    #"Expanded rxs.obs.msg.iaqi" = Table.ExpandRecordColumn(#"Renamed Columns", "rxs.obs.msg.iaqi", {"h", "no2", "o3", "p", "pm10", "pm25", "t", "w", "wg"}, {"rxs.obs.msg.iaqi.h", "rxs.obs.msg.iaqi.no2", "rxs.obs.msg.iaqi.o3", "rxs.obs.msg.iaqi.p", "rxs.obs.msg.iaqi.pm10", "rxs.obs.msg.iaqi.pm25", "rxs.obs.msg.iaqi.t", "rxs.obs.msg.iaqi.w", "rxs.obs.msg.iaqi.wg"}),
+			    #"Expanded rxs.obs.msg.iaqi.h" = Table.ExpandRecordColumn(#"Expanded rxs.obs.msg.iaqi", "rxs.obs.msg.iaqi.h", {"v", "t"}, {"humidity", "rxs.obs.msg.iaqi.h.t"}),
+			    #"Expanded rxs.obs.msg.iaqi.no2" = Table.ExpandRecordColumn(#"Expanded rxs.obs.msg.iaqi.h", "rxs.obs.msg.iaqi.no2", {"v", "t"}, {"no2", "rxs.obs.msg.iaqi.no2.t"}),
+			    #"Expanded rxs.obs.msg.iaqi.o3" = Table.ExpandRecordColumn(#"Expanded rxs.obs.msg.iaqi.no2", "rxs.obs.msg.iaqi.o3", {"v", "t"}, {"ozone", "rxs.obs.msg.iaqi.o3.t"}),
+			    #"Expanded rxs.obs.msg.iaqi.p" = Table.ExpandRecordColumn(#"Expanded rxs.obs.msg.iaqi.o3", "rxs.obs.msg.iaqi.p", {"v", "t"}, {"pressure", "rxs.obs.msg.iaqi.p.t"}),
+			    #"Expanded rxs.obs.msg.iaqi.pm10" = Table.ExpandRecordColumn(#"Expanded rxs.obs.msg.iaqi.p", "rxs.obs.msg.iaqi.pm10", {"v", "t"}, {"pm10", "rxs.obs.msg.iaqi.pm10.t"}),
+			    #"Expanded rxs.obs.msg.iaqi.pm25" = Table.ExpandRecordColumn(#"Expanded rxs.obs.msg.iaqi.pm10", "rxs.obs.msg.iaqi.pm25", {"v", "t"}, {"pm25", "rxs.obs.msg.iaqi.pm25.t"}),
+			    #"Expanded rxs.obs.msg.iaqi.t" = Table.ExpandRecordColumn(#"Expanded rxs.obs.msg.iaqi.pm25", "rxs.obs.msg.iaqi.t", {"v", "t"}, {"temp", "rxs.obs.msg.iaqi.t.t"}),
+			    #"Expanded rxs.obs.msg.iaqi.w" = Table.ExpandRecordColumn(#"Expanded rxs.obs.msg.iaqi.t", "rxs.obs.msg.iaqi.w", {"v", "t"}, {"wind", "rxs.obs.msg.iaqi.w.t"}),
+			    #"Expanded rxs.obs.msg.iaqi.wg" = Table.ExpandRecordColumn(#"Expanded rxs.obs.msg.iaqi.w", "rxs.obs.msg.iaqi.wg", {"v", "t"}, {"gust", "rxs.obs.msg.iaqi.wg.t"}),
+			    #"Expanded rxs.obs.msg.time" = Table.ExpandRecordColumn(#"Expanded rxs.obs.msg.iaqi.wg", "rxs.obs.msg.time", {"s", "tz", "v", "iso"}, {"rxs.obs.msg.time.s", "rxs.obs.msg.time.tz", "rxs.obs.msg.time.v", "rxs.obs.msg.time.iso"}),
+			    #"Expanded rxs.obs.msg.obs" = Table.ExpandRecordColumn(#"Expanded rxs.obs.msg.time", "rxs.obs.msg.obs", {"h", "no2", "o3", "p", "pm10", "pm25", "t", "w", "wg"}, {"rxs.obs.msg.obs.h", "rxs.obs.msg.obs.no2", "rxs.obs.msg.obs.o3", "rxs.obs.msg.obs.p", "rxs.obs.msg.obs.pm10", "rxs.obs.msg.obs.pm25", "rxs.obs.msg.obs.t", "rxs.obs.msg.obs.w", "rxs.obs.msg.obs.wg"}),
+			    #"Expanded rxs.obs.msg.obs.h" = Table.ExpandRecordColumn(#"Expanded rxs.obs.msg.obs", "rxs.obs.msg.obs.h", {"e", "s", "d", "m", "v"}, {"rxs.obs.msg.obs.h.e", "rxs.obs.msg.obs.h.s", "rxs.obs.msg.obs.h.d", "rxs.obs.msg.obs.h.m", "rxs.obs.msg.obs.h.v"}),
+			    #"Expanded rxs.obs.msg.obs.no2" = Table.ExpandRecordColumn(#"Expanded rxs.obs.msg.obs.h", "rxs.obs.msg.obs.no2", {"e", "s", "d", "m", "v"}, {"rxs.obs.msg.obs.no2.e", "rxs.obs.msg.obs.no2.s", "rxs.obs.msg.obs.no2.d", "rxs.obs.msg.obs.no2.m", "rxs.obs.msg.obs.no2.v"}),
+			    #"Expanded rxs.obs.msg.obs.o3" = Table.ExpandRecordColumn(#"Expanded rxs.obs.msg.obs.no2", "rxs.obs.msg.obs.o3", {"e", "s", "d", "m", "v"}, {"rxs.obs.msg.obs.o3.e", "rxs.obs.msg.obs.o3.s", "rxs.obs.msg.obs.o3.d", "rxs.obs.msg.obs.o3.m", "rxs.obs.msg.obs.o3.v"}),
+			    #"Expanded rxs.obs.msg.obs.p" = Table.ExpandRecordColumn(#"Expanded rxs.obs.msg.obs.o3", "rxs.obs.msg.obs.p", {"e", "s", "d", "m", "v"}, {"rxs.obs.msg.obs.p.e", "rxs.obs.msg.obs.p.s", "rxs.obs.msg.obs.p.d", "rxs.obs.msg.obs.p.m", "rxs.obs.msg.obs.p.v"}),
+			    #"Expanded rxs.obs.msg.obs.pm10" = Table.ExpandRecordColumn(#"Expanded rxs.obs.msg.obs.p", "rxs.obs.msg.obs.pm10", {"e", "s", "d", "m", "v"}, {"rxs.obs.msg.obs.pm10.e", "rxs.obs.msg.obs.pm10.s", "rxs.obs.msg.obs.pm10.d", "rxs.obs.msg.obs.pm10.m", "rxs.obs.msg.obs.pm10.v"}),
+			    #"Expanded rxs.obs.msg.obs.pm25" = Table.ExpandRecordColumn(#"Expanded rxs.obs.msg.obs.pm10", "rxs.obs.msg.obs.pm25", {"e", "s", "d", "m", "v"}, {"rxs.obs.msg.obs.pm25.e", "rxs.obs.msg.obs.pm25.s", "rxs.obs.msg.obs.pm25.d", "rxs.obs.msg.obs.pm25.m", "rxs.obs.msg.obs.pm25.v"}),
+			    #"Expanded rxs.obs.msg.obs.t" = Table.ExpandRecordColumn(#"Expanded rxs.obs.msg.obs.pm25", "rxs.obs.msg.obs.t", {"e", "s", "d", "m", "v"}, {"rxs.obs.msg.obs.t.e", "rxs.obs.msg.obs.t.s", "rxs.obs.msg.obs.t.d", "rxs.obs.msg.obs.t.m", "rxs.obs.msg.obs.t.v"}),
+			    #"Expanded rxs.obs.msg.obs.w" = Table.ExpandRecordColumn(#"Expanded rxs.obs.msg.obs.t", "rxs.obs.msg.obs.w", {"e", "s", "d", "m", "v"}, {"rxs.obs.msg.obs.w.e", "rxs.obs.msg.obs.w.s", "rxs.obs.msg.obs.w.d", "rxs.obs.msg.obs.w.m", "rxs.obs.msg.obs.w.v"}),
+			    #"Expanded rxs.obs.msg.obs.wg" = Table.ExpandRecordColumn(#"Expanded rxs.obs.msg.obs.w", "rxs.obs.msg.obs.wg", {"e", "s", "d", "m", "v"}, {"rxs.obs.msg.obs.wg.e", "rxs.obs.msg.obs.wg.s", "rxs.obs.msg.obs.wg.d", "rxs.obs.msg.obs.wg.m", "rxs.obs.msg.obs.wg.v"}),
+			    #"Expanded rxs.obs.msg.forecast" = Table.ExpandRecordColumn(#"Expanded rxs.obs.msg.obs.wg", "rxs.obs.msg.forecast", {"daily", "hourly"}, {"rxs.obs.msg.forecast.daily", "rxs.obs.msg.forecast.hourly"}),
+			    #"Expanded rxs.obs.msg.forecast.daily" = Table.ExpandRecordColumn(#"Expanded rxs.obs.msg.forecast", "rxs.obs.msg.forecast.daily", {"o3", "pm10", "pm25"}, {"rxs.obs.msg.forecast.daily.o3", "rxs.obs.msg.forecast.daily.pm10", "rxs.obs.msg.forecast.daily.pm25"}),
+			    #"Expanded rxs.obs.msg.forecast.hourly" = Table.ExpandRecordColumn(#"Expanded rxs.obs.msg.forecast.daily", "rxs.obs.msg.forecast.hourly", {}, {}),
+			    #"Expanded rxs.obs.msg.xsync" = Table.ExpandRecordColumn(#"Expanded rxs.obs.msg.forecast.hourly", "rxs.obs.msg.xsync", {"gen"}, {"rxs.obs.msg.xsync.gen"}),
+			    #"Changed Type" = Table.TransformColumnTypes(#"Expanded rxs.obs.msg.xsync",{{"dt", type text}, {"rxs.obs.msg.aqi", Int64.Type}, {"rxs.obs.msg.idx", Int64.Type}, {"rxs.obs.msg.attributions", type any}, {"latitude", type number}, {"longitude", type number}, {"rxs.obs.msg.city.name", type text}, {"rxs.obs.msg.city.url", type text}, {"rxs.obs.msg.dominentpol", type text}, {"humidity", type number}, {"rxs.obs.msg.iaqi.h.t", type datetime}, {"no2", type number}, {"rxs.obs.msg.iaqi.no2.t", type datetime}, {"ozone", type number}, {"rxs.obs.msg.iaqi.o3.t", type datetime}, {"pressure", type number}, {"rxs.obs.msg.iaqi.p.t", type datetime}, {"pm10", Int64.Type}, {"rxs.obs.msg.iaqi.pm10.t", type datetime}, {"pm25", Int64.Type}, {"rxs.obs.msg.iaqi.pm25.t", type datetime}, {"temp", type number}, {"rxs.obs.msg.iaqi.t.t", type datetime}, {"wind", type number}, {"rxs.obs.msg.iaqi.w.t", type datetime}, {"gust", type number}, {"rxs.obs.msg.iaqi.wg.t", type datetime}, {"rxs.obs.msg.time.s", type datetime}, {"rxs.obs.msg.time.tz", type text}, {"rxs.obs.msg.time.v", Int64.Type}, {"rxs.obs.msg.time.iso", type datetimezone}, {"rxs.obs.msg.obs.h.e", Int64.Type}, {"rxs.obs.msg.obs.h.s", type datetime}, {"rxs.obs.msg.obs.h.d", Int64.Type}, {"rxs.obs.msg.obs.h.m", Int64.Type}, {"rxs.obs.msg.obs.h.v", type any}, {"rxs.obs.msg.obs.no2.e", Int64.Type}, {"rxs.obs.msg.obs.no2.s", type datetime}, {"rxs.obs.msg.obs.no2.d", Int64.Type}, {"rxs.obs.msg.obs.no2.m", Int64.Type}, {"rxs.obs.msg.obs.no2.v", type any}, {"rxs.obs.msg.obs.o3.e", Int64.Type}, {"rxs.obs.msg.obs.o3.s", type datetime}, {"rxs.obs.msg.obs.o3.d", Int64.Type}, {"rxs.obs.msg.obs.o3.m", Int64.Type}, {"rxs.obs.msg.obs.o3.v", type any}, {"rxs.obs.msg.obs.p.e", Int64.Type}, {"rxs.obs.msg.obs.p.s", type datetime}, {"rxs.obs.msg.obs.p.d", Int64.Type}, {"rxs.obs.msg.obs.p.m", Int64.Type}, {"rxs.obs.msg.obs.p.v", type any}, {"rxs.obs.msg.obs.pm10.e", Int64.Type}, {"rxs.obs.msg.obs.pm10.s", type datetime}, {"rxs.obs.msg.obs.pm10.d", Int64.Type}, {"rxs.obs.msg.obs.pm10.m", Int64.Type}, {"rxs.obs.msg.obs.pm10.v", type any}, {"rxs.obs.msg.obs.pm25.e", Int64.Type}, {"rxs.obs.msg.obs.pm25.s", type datetime}, {"rxs.obs.msg.obs.pm25.d", Int64.Type}, {"rxs.obs.msg.obs.pm25.m", Int64.Type}, {"rxs.obs.msg.obs.pm25.v", type any}, {"rxs.obs.msg.obs.t.e", Int64.Type}, {"rxs.obs.msg.obs.t.s", type datetime}, {"rxs.obs.msg.obs.t.d", Int64.Type}, {"rxs.obs.msg.obs.t.m", Int64.Type}, {"rxs.obs.msg.obs.t.v", type any}, {"rxs.obs.msg.obs.w.e", Int64.Type}, {"rxs.obs.msg.obs.w.s", type datetime}, {"rxs.obs.msg.obs.w.d", Int64.Type}, {"rxs.obs.msg.obs.w.m", Int64.Type}, {"rxs.obs.msg.obs.w.v", type any}, {"rxs.obs.msg.obs.wg.e", Int64.Type}, {"rxs.obs.msg.obs.wg.s", type datetime}, {"rxs.obs.msg.obs.wg.d", Int64.Type}, {"rxs.obs.msg.obs.wg.m", Int64.Type}, {"rxs.obs.msg.obs.wg.v", type any}, {"rxs.obs.msg.forecast.daily.o3", type any}, {"rxs.obs.msg.forecast.daily.pm10", type any}, {"rxs.obs.msg.forecast.daily.pm25", type any}, {"rxs.obs.msg.xsync.gen", Int64.Type}, {"rxs.obs.status", type text}, {"rxs.obs.cached", type text}, {"rxs.status", type text}, {"rxs.ver", Int64.Type}})
+			in
+			    #"Changed Type"
+
+	column dt
+		dataType: String
+		isDataTypeInferred: false
+		lineageTag: e0a958aa-d970-4bd6-a7d4-6b5bfc09adb3
+		sourceColumn: dt
+		summarizeBy: None
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.aqi'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: 9c1f18b4-7310-4bbd-b6ad-18456425dfa1
+		sourceColumn: rxs.obs.msg.aqi
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.idx'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: 1132e247-9f4f-4b11-8e5a-4f0a81cde722
+		sourceColumn: rxs.obs.msg.idx
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.attributions'
+		dataType: String
+		isDataTypeInferred: false
+		lineageTag: b6bb99ff-4866-4c52-92c6-27307e980d01
+		sourceColumn: rxs.obs.msg.attributions
+		summarizeBy: None
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.city.url'
+		dataType: String
+		isDataTypeInferred: false
+		lineageTag: 1b96d63e-8e95-49c1-9f59-564eea1e4525
+		sourceColumn: rxs.obs.msg.city.url
+		summarizeBy: None
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.dominentpol'
+		dataType: String
+		isDataTypeInferred: false
+		lineageTag: 9b793f98-0e5f-436c-b0ee-21131722af36
+		sourceColumn: rxs.obs.msg.dominentpol
+		summarizeBy: None
+
+		annotation SummarizationSetBy = Automatic
+
+	column humidity
+		dataType: Double
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: 5b8b1474-d93b-4b38-ba68-53819ed13e5f
+		sourceColumn: humidity
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.iaqi.h.t'
+		dataType: DateTime
+		formatString:= General Date
+		isDataTypeInferred: false
+		lineageTag: 94137f09-ef14-41c7-bdb2-6a319c7beb40
+		sourceColumn: rxs.obs.msg.iaqi.h.t
+		summarizeBy: None
+
+		variation Variation
+			defaultHierarchy: 'LocalDateTable_7405fd18-3aea-4412-831f-bc69364849a2'.'Date Hierarchy'
+			isDefault
+			relationship: '2d56fe36-4978-44c3-bca8-509e409f7bdc'
+
+		annotation SummarizationSetBy = Automatic
+
+	column no2
+		dataType: Double
+		isDataTypeInferred: false
+		lineageTag: cfbb916f-d4a2-43f5-879c-5068e3e8f1f6
+		sourceColumn: no2
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'rxs.obs.msg.iaqi.no2.t'
+		dataType: DateTime
+		formatString:= General Date
+		isDataTypeInferred: false
+		lineageTag: d97f61f3-b962-4de9-b844-73adc2fa974e
+		sourceColumn: rxs.obs.msg.iaqi.no2.t
+		summarizeBy: None
+
+		variation Variation
+			defaultHierarchy: 'LocalDateTable_385d3983-9413-4704-967a-8776b62ea16b'.'Date Hierarchy'
+			isDefault
+			relationship: '556c4a46-6daa-4b30-af63-257c7e27dea7'
+
+		annotation SummarizationSetBy = Automatic
+
+	column pressure
+		dataType: Double
+		isDataTypeInferred: false
+		lineageTag: 52ba8566-9a21-4fa3-a39f-c8d8911fdee7
+		sourceColumn: pressure
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'rxs.obs.msg.iaqi.p.t'
+		dataType: DateTime
+		formatString:= General Date
+		isDataTypeInferred: false
+		lineageTag: 37d933ba-4bbe-46f1-bd08-4a50b543fba8
+		sourceColumn: rxs.obs.msg.iaqi.p.t
+		summarizeBy: None
+
+		variation Variation
+			defaultHierarchy: 'LocalDateTable_6cc9a205-d8cc-4c8c-8aa0-ae3209451111'.'Date Hierarchy'
+			isDefault
+			relationship: '7ec3fce9-910f-4c29-bd57-71d517434ce0'
+
+		annotation SummarizationSetBy = Automatic
+
+	column pm10
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: aafd8ed7-5a2b-4e4f-a126-17ea9a3b4626
+		sourceColumn: pm10
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.iaqi.pm10.t'
+		dataType: DateTime
+		formatString:= General Date
+		isDataTypeInferred: false
+		lineageTag: fab501d2-d630-4361-a833-0b7d3ae061df
+		sourceColumn: rxs.obs.msg.iaqi.pm10.t
+		summarizeBy: None
+
+		variation Variation
+			defaultHierarchy: 'LocalDateTable_47bacfa4-8ff1-4f62-bca9-ce89b8ab061c'.'Date Hierarchy'
+			isDefault
+			relationship: 'c9ffa3d9-841a-42a0-82f6-04ef763fd1a4'
+
+		annotation SummarizationSetBy = Automatic
+
+	column pm25
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: 134833c3-6235-4bbd-96c7-bf00e8a90f56
+		sourceColumn: pm25
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.iaqi.pm25.t'
+		dataType: DateTime
+		formatString:= General Date
+		isDataTypeInferred: false
+		lineageTag: 8cfbee64-357e-4474-9993-8f578e3db021
+		sourceColumn: rxs.obs.msg.iaqi.pm25.t
+		summarizeBy: None
+
+		variation Variation
+			defaultHierarchy: 'LocalDateTable_8d593930-bcfd-4a95-a25e-eb7b730c8443'.'Date Hierarchy'
+			isDefault
+			relationship: '90c626d1-8ecb-4298-9b78-88b6301d93ea'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.iaqi.t.t'
+		dataType: DateTime
+		formatString:= General Date
+		isDataTypeInferred: false
+		lineageTag: 959ec64b-2e8f-4db5-8473-3f92b1acb25d
+		sourceColumn: rxs.obs.msg.iaqi.t.t
+		summarizeBy: None
+
+		variation Variation
+			defaultHierarchy: 'LocalDateTable_70b67c3f-c0a2-4b36-9180-356415096145'.'Date Hierarchy'
+			isDefault
+			relationship: 'f1696837-9d20-4ca9-b22e-cc955d132718'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.time.s'
+		dataType: DateTime
+		formatString:= General Date
+		isDataTypeInferred: false
+		lineageTag: 9949998a-94e5-4bd9-b909-99c6717f319a
+		sourceColumn: rxs.obs.msg.time.s
+		summarizeBy: None
+
+		variation Variation
+			defaultHierarchy: 'LocalDateTable_f7de76f4-070c-480e-ae08-1e34f8bda3cf'.'Date Hierarchy'
+			isDefault
+			relationship: '2184384d-d459-4cdf-8479-a9265792724e'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.time.tz'
+		dataType: String
+		isDataTypeInferred: false
+		lineageTag: 58627773-7540-48f0-8548-682c97506d46
+		sourceColumn: rxs.obs.msg.time.tz
+		summarizeBy: None
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.time.v'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: a04c86c3-fb2e-496d-9a81-94c47cbefa7b
+		sourceColumn: rxs.obs.msg.time.v
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.time.iso'
+		dataType: DateTime
+		formatString:= General Date
+		isDataTypeInferred: false
+		lineageTag: 96099f35-8ffa-465c-aa25-f35a7d19c3cd
+		sourceColumn: rxs.obs.msg.time.iso
+		summarizeBy: None
+
+		variation Variation
+			defaultHierarchy: 'LocalDateTable_f39e461e-2b7b-4527-81ad-cf41e04c1bb5'.'Date Hierarchy'
+			isDefault
+			relationship: '159a4cf7-55da-497c-b6d0-3d85f1b7f19b'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.h.e'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: 919788a4-23a5-420c-9e51-83cea191496a
+		sourceColumn: rxs.obs.msg.obs.h.e
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.h.s'
+		dataType: DateTime
+		formatString:= General Date
+		isDataTypeInferred: false
+		lineageTag: 171fdd56-7025-4678-bceb-0e0d25e5a965
+		sourceColumn: rxs.obs.msg.obs.h.s
+		summarizeBy: None
+
+		variation Variation
+			defaultHierarchy: 'LocalDateTable_7efaade0-2bb7-4edb-8d15-ff178b5d9f47'.'Date Hierarchy'
+			isDefault
+			relationship: '2d3c7ff2-e48a-4792-9531-b082b03c12f3'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.h.d'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: d73d4012-7b29-4660-b5a8-3ececa53e4bc
+		sourceColumn: rxs.obs.msg.obs.h.d
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.h.m'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: 84d7f49b-6965-4488-b22b-89267ba9a04f
+		sourceColumn: rxs.obs.msg.obs.h.m
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.h.v'
+		dataType: String
+		isDataTypeInferred: false
+		lineageTag: 74540626-9759-4d49-abd5-c6351ea4e8ec
+		sourceColumn: rxs.obs.msg.obs.h.v
+		summarizeBy: None
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.no2.e'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: 27e9f0cd-0971-4d03-9e18-0e79701c606c
+		sourceColumn: rxs.obs.msg.obs.no2.e
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.no2.s'
+		dataType: DateTime
+		formatString:= General Date
+		isDataTypeInferred: false
+		lineageTag: 71441360-ee26-48dd-b596-271ab225c500
+		sourceColumn: rxs.obs.msg.obs.no2.s
+		summarizeBy: None
+
+		variation Variation
+			defaultHierarchy: 'LocalDateTable_dacb8eaa-41e5-4fa7-bac9-0641d6993ded'.'Date Hierarchy'
+			isDefault
+			relationship: '7beae25c-d81c-441d-a050-bf3a1a503ef3'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.no2.d'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: 88e3ebc1-23e5-4951-96dc-481497d83e83
+		sourceColumn: rxs.obs.msg.obs.no2.d
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.no2.m'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: 5a2d0995-41c6-4af9-8f0b-5b2ab290c99d
+		sourceColumn: rxs.obs.msg.obs.no2.m
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.no2.v'
+		dataType: String
+		isDataTypeInferred: false
+		lineageTag: 62c14a18-4d22-465c-9156-29ca7c473701
+		sourceColumn: rxs.obs.msg.obs.no2.v
+		summarizeBy: None
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.p.e'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: e3301f84-9b6a-4ba2-a072-269332422b53
+		sourceColumn: rxs.obs.msg.obs.p.e
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.p.s'
+		dataType: DateTime
+		formatString:= General Date
+		isDataTypeInferred: false
+		lineageTag: 864bcbc7-8873-45cc-881f-1874394b3143
+		sourceColumn: rxs.obs.msg.obs.p.s
+		summarizeBy: None
+
+		variation Variation
+			defaultHierarchy: 'LocalDateTable_f8a78645-1d85-488a-b48d-6512cb28a8db'.'Date Hierarchy'
+			isDefault
+			relationship: 'e97f1f57-7835-4e1f-922b-4c8f0cbe320a'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.p.d'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: 6256be4e-69d8-44a9-852b-3c19da31cff6
+		sourceColumn: rxs.obs.msg.obs.p.d
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.p.m'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: 0812575c-adf7-4356-8510-f8854f8d7b50
+		sourceColumn: rxs.obs.msg.obs.p.m
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.p.v'
+		dataType: String
+		isDataTypeInferred: false
+		lineageTag: 3a65c61a-3afd-475e-8bdc-157f7ba1a7e8
+		sourceColumn: rxs.obs.msg.obs.p.v
+		summarizeBy: None
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.pm10.e'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: 66bdfe53-c713-4c89-8cc7-3ef0bdb52489
+		sourceColumn: rxs.obs.msg.obs.pm10.e
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.pm10.s'
+		dataType: DateTime
+		formatString:= General Date
+		isDataTypeInferred: false
+		lineageTag: ddbf963f-bb1a-470e-8ad7-690549c083f1
+		sourceColumn: rxs.obs.msg.obs.pm10.s
+		summarizeBy: None
+
+		variation Variation
+			defaultHierarchy: 'LocalDateTable_ad09c950-bbf3-46f5-b3f8-78a29e155538'.'Date Hierarchy'
+			isDefault
+			relationship: 'ba82ba6f-2831-4b64-b6dc-d7267a254acd'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.pm10.d'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: fdc2095f-42e1-4050-9909-9cd6cfdbab0a
+		sourceColumn: rxs.obs.msg.obs.pm10.d
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.pm10.m'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: 921136b8-179a-4b40-b11f-66265fc918a5
+		sourceColumn: rxs.obs.msg.obs.pm10.m
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.pm10.v'
+		dataType: String
+		isDataTypeInferred: false
+		lineageTag: e218da66-87b9-4b6a-bdd0-9de038846bd9
+		sourceColumn: rxs.obs.msg.obs.pm10.v
+		summarizeBy: None
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.pm25.e'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: 6c6282d1-dae6-484d-989d-094c6c4cde78
+		sourceColumn: rxs.obs.msg.obs.pm25.e
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.pm25.s'
+		dataType: DateTime
+		formatString:= General Date
+		isDataTypeInferred: false
+		lineageTag: f660f446-ac4e-40c2-93cc-af518043fe89
+		sourceColumn: rxs.obs.msg.obs.pm25.s
+		summarizeBy: None
+
+		variation Variation
+			defaultHierarchy: 'LocalDateTable_1a5ba752-eef9-4e78-bc12-ce5e3a8d0f1c'.'Date Hierarchy'
+			isDefault
+			relationship: 'e27dc510-821b-4f09-af0e-9b740594fdcd'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.pm25.d'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: ebdc5de9-215b-4ab8-b54e-4b80211680ef
+		sourceColumn: rxs.obs.msg.obs.pm25.d
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.pm25.m'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: 95fa9b1b-1b36-46b1-a2c1-3f4443f140ca
+		sourceColumn: rxs.obs.msg.obs.pm25.m
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.pm25.v'
+		dataType: String
+		isDataTypeInferred: false
+		lineageTag: f68a776b-7f96-45a6-a347-38acc01cba97
+		sourceColumn: rxs.obs.msg.obs.pm25.v
+		summarizeBy: None
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.t.e'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: 4b0da1dd-aca8-40a0-87b0-c698b7bda132
+		sourceColumn: rxs.obs.msg.obs.t.e
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.t.s'
+		dataType: DateTime
+		formatString:= General Date
+		isDataTypeInferred: false
+		lineageTag: 49a4545c-28f3-4b96-8796-aa23c19a7690
+		sourceColumn: rxs.obs.msg.obs.t.s
+		summarizeBy: None
+
+		variation Variation
+			defaultHierarchy: 'LocalDateTable_82615167-61d8-44b5-814c-7eb2477e48b7'.'Date Hierarchy'
+			isDefault
+			relationship: '2f986839-4e30-4cb1-a673-d566624255db'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.t.d'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: 7fd3d4d6-fd77-420a-a35c-9a56a9e69a9d
+		sourceColumn: rxs.obs.msg.obs.t.d
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.t.m'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: 0c317e1d-f219-4d71-9e3d-99fb8cd8fb88
+		sourceColumn: rxs.obs.msg.obs.t.m
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.t.v'
+		dataType: String
+		isDataTypeInferred: false
+		lineageTag: 5f6949f0-8b5b-4e40-a06d-23ba0898ff2d
+		sourceColumn: rxs.obs.msg.obs.t.v
+		summarizeBy: None
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.forecast.daily.o3'
+		dataType: String
+		isDataTypeInferred: false
+		lineageTag: ff2657b4-618d-41b2-b986-8e8c68df1f2b
+		sourceColumn: rxs.obs.msg.forecast.daily.o3
+		summarizeBy: None
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.forecast.daily.pm10'
+		dataType: String
+		isDataTypeInferred: false
+		lineageTag: e78f6a84-db07-4472-9d8d-c3d28f6b87c7
+		sourceColumn: rxs.obs.msg.forecast.daily.pm10
+		summarizeBy: None
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.forecast.daily.pm25'
+		dataType: String
+		isDataTypeInferred: false
+		lineageTag: b84a70a5-953e-475e-be30-a856fb20800b
+		sourceColumn: rxs.obs.msg.forecast.daily.pm25
+		summarizeBy: None
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.xsync.gen'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: 59344e6e-b421-42f1-9389-0a2764f53244
+		sourceColumn: rxs.obs.msg.xsync.gen
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.status'
+		dataType: String
+		isDataTypeInferred: false
+		lineageTag: ef8a9220-04a8-42e5-a351-b35e7726c3de
+		sourceColumn: rxs.obs.status
+		summarizeBy: None
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.cached'
+		dataType: String
+		isDataTypeInferred: false
+		lineageTag: 3bbb07ac-e079-4b5f-98a1-bb41fbf4f6cd
+		sourceColumn: rxs.obs.cached
+		summarizeBy: None
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.status'
+		dataType: String
+		isDataTypeInferred: false
+		lineageTag: 8db3a658-7418-4b67-9081-7333f5d9cf30
+		sourceColumn: rxs.status
+		summarizeBy: None
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.ver'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: f841fc51-b2f9-4d40-89c6-aeafdb812a47
+		sourceColumn: rxs.ver
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.city.name'
+		dataType: String
+		isDataTypeInferred: false
+		lineageTag: 614f7450-f009-490a-84f4-72b4c77f579b
+		sourceColumn: rxs.obs.msg.city.name
+		summarizeBy: None
+
+		annotation SummarizationSetBy = Automatic
+
+	column ozone
+		dataType: Double
+		isDataTypeInferred: false
+		lineageTag: 1d4dca53-6924-4d23-84bc-18f7656e4c31
+		sourceColumn: ozone
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'rxs.obs.msg.iaqi.o3.t'
+		dataType: DateTime
+		formatString:= General Date
+		isDataTypeInferred: false
+		lineageTag: a1478ef7-8253-4753-b2ce-b499c67d4ed2
+		sourceColumn: rxs.obs.msg.iaqi.o3.t
+		summarizeBy: None
+
+		variation Variation
+			defaultHierarchy: 'LocalDateTable_f2cf870c-8800-407a-9340-0b1c9e3d1248'.'Date Hierarchy'
+			isDefault
+			relationship: 'f234aeb9-4d43-4c7d-a3df-f9bc7195e252'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.iaqi.w.t'
+		dataType: DateTime
+		formatString:= General Date
+		isDataTypeInferred: false
+		lineageTag: 4d22d7b8-9066-4a4a-a4fd-5b079da227e6
+		sourceColumn: rxs.obs.msg.iaqi.w.t
+		summarizeBy: None
+
+		variation Variation
+			defaultHierarchy: 'LocalDateTable_81c3a6ce-0ba0-4aa6-9552-8f2c168ebd52'.'Date Hierarchy'
+			isDefault
+			relationship: 'a5d5d536-8ab4-4d5e-98f5-062981f0bf47'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.iaqi.wg.t'
+		dataType: DateTime
+		formatString:= General Date
+		isDataTypeInferred: false
+		lineageTag: 06f6d5f4-6f17-4a24-8669-fa014259c4a2
+		sourceColumn: rxs.obs.msg.iaqi.wg.t
+		summarizeBy: None
+
+		variation Variation
+			defaultHierarchy: 'LocalDateTable_ee96900e-d3a9-4097-9fd6-7921289f766d'.'Date Hierarchy'
+			isDefault
+			relationship: 'ca4c63b5-edb7-4078-8300-d01a568e4103'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.o3.e'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: a61ce68b-398b-435b-b6e7-fb58755d0ab2
+		sourceColumn: rxs.obs.msg.obs.o3.e
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.o3.s'
+		dataType: DateTime
+		formatString:= General Date
+		isDataTypeInferred: false
+		lineageTag: 096bf154-d136-4f70-9d92-a7e768f78d44
+		sourceColumn: rxs.obs.msg.obs.o3.s
+		summarizeBy: None
+
+		variation Variation
+			defaultHierarchy: 'LocalDateTable_74450d3d-ef4b-480a-a4bb-fb3ab425c684'.'Date Hierarchy'
+			isDefault
+			relationship: '1c6bcf71-87aa-4380-b35b-3b26cee66353'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.o3.d'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: 8000776e-e796-417f-b1ae-3a9c95680795
+		sourceColumn: rxs.obs.msg.obs.o3.d
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.o3.m'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: 5538788e-8b35-4707-8c66-4e93baaf48f1
+		sourceColumn: rxs.obs.msg.obs.o3.m
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.o3.v'
+		dataType: String
+		isDataTypeInferred: false
+		lineageTag: d1f95cc3-4b9b-430e-971c-f130d553fc82
+		sourceColumn: rxs.obs.msg.obs.o3.v
+		summarizeBy: None
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.w.e'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: 53672b9c-22aa-412f-854a-4b5305a27547
+		sourceColumn: rxs.obs.msg.obs.w.e
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.w.s'
+		dataType: DateTime
+		formatString:= General Date
+		isDataTypeInferred: false
+		lineageTag: da338c60-2de1-461a-8c0a-3228ccf00040
+		sourceColumn: rxs.obs.msg.obs.w.s
+		summarizeBy: None
+
+		variation Variation
+			defaultHierarchy: 'LocalDateTable_0af7dad0-497c-424e-9205-e3f3f817e871'.'Date Hierarchy'
+			isDefault
+			relationship: '9a10d168-c2db-4a58-914f-a3964aee9295'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.w.d'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: c7d8376b-6294-4dee-9295-f19f5c410b6c
+		sourceColumn: rxs.obs.msg.obs.w.d
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.w.m'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: 671241fc-7c43-436f-b885-f39649cba761
+		sourceColumn: rxs.obs.msg.obs.w.m
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.w.v'
+		dataType: String
+		isDataTypeInferred: false
+		lineageTag: c295eee3-1928-4e94-a7ac-ba6b8f58b01a
+		sourceColumn: rxs.obs.msg.obs.w.v
+		summarizeBy: None
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.wg.e'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: 559d8278-f30f-48c7-a185-d7e28816f9b7
+		sourceColumn: rxs.obs.msg.obs.wg.e
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.wg.s'
+		dataType: DateTime
+		formatString:= General Date
+		isDataTypeInferred: false
+		lineageTag: 39b0184c-10b3-4e3b-9817-8413b97f1aab
+		sourceColumn: rxs.obs.msg.obs.wg.s
+		summarizeBy: None
+
+		variation Variation
+			defaultHierarchy: 'LocalDateTable_975f195f-a55a-4434-a221-d0a0bf102ec6'.'Date Hierarchy'
+			isDefault
+			relationship: '22162736-8b37-4273-bab2-eafa26b1d851'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.wg.d'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: 1e265222-7d9d-423e-ace8-0c928c146f99
+		sourceColumn: rxs.obs.msg.obs.wg.d
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.wg.m'
+		dataType: Int64
+		formatString:= 0
+		isDataTypeInferred: false
+		lineageTag: fba3cdb5-e745-4324-a29b-f801b5911f3f
+		sourceColumn: rxs.obs.msg.obs.wg.m
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'rxs.obs.msg.obs.wg.v'
+		dataType: String
+		isDataTypeInferred: false
+		lineageTag: ac8e51c8-ca42-4ace-b2d7-fb63727738dd
+		sourceColumn: rxs.obs.msg.obs.wg.v
+		summarizeBy: None
+
+		annotation SummarizationSetBy = Automatic
+
+	column temp
+		dataType: Double
+		isDataTypeInferred: false
+		lineageTag: ca7092f1-9fad-4b3a-8d9c-ad1b2ad299f0
+		sourceColumn: temp
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column wind
+		dataType: Double
+		isDataTypeInferred: false
+		lineageTag: ca53872d-b686-4677-8c16-92e23d60de4d
+		sourceColumn: wind
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column gust
+		dataType: Double
+		isDataTypeInferred: false
+		lineageTag: 1dfabcbf-b735-4551-8062-d206ff375c39
+		sourceColumn: gust
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column latitude
+		dataType: Double
+		isDataTypeInferred: false
+		lineageTag: 3197ed66-89c8-4aac-949d-371fc126cc16
+		sourceColumn: latitude
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column longitude
+		dataType: Double
+		isDataTypeInferred: false
+		lineageTag: 4ef4106d-3a60-4d83-88c4-8ad723cf37b9
+		sourceColumn: longitude
+		summarizeBy: Sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

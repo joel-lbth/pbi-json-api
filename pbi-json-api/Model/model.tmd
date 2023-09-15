@@ -1,0 +1,35 @@
+model Model
+	compatibilityLevel: 1567
+	culture: en-US
+	dataAccessOptions:
+		legacyRedirects
+		returnErrorValuesAsNull
+	defaultPowerBIDataSourceVersion: PowerBI_V3
+	sourceQueryCulture: en-GB
+
+/// Errors in queries that were loaded on 14/09/2023 22:39:12.
+queryGroup 'Query Errors - 14/09/2023 22:39:12'
+
+	annotation PBI_QueryGroupOrder = 0
+
+/// Errors in queries that were loaded on 14/09/2023 22:39:16.
+queryGroup 'Query Errors - 14/09/2023 22:39:16'
+
+	annotation PBI_QueryGroupOrder = 1
+
+/// Errors in queries that were loaded on 15/09/2023 09:00:57.
+queryGroup 'Query Errors - 15/09/2023 09:00:57'
+
+	annotation PBI_QueryGroupOrder = 2
+
+/// Errors in queries that were loaded on 15/09/2023 09:47:33.
+queryGroup 'Query Errors - 15/09/2023 09:47:33'
+
+	annotation PBI_QueryGroupOrder = 3
+
+annotation PBI_QueryOrder = ["waqi api - victoria park","waqi api - blackwall","Errors in waqi api - victoria park","Errors in waqi api - victoria park (2)","Errors in waqi api - victoria park (3)","Errors in waqi api - victoria park (4)"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBIDesktopVersion = 2.120.963.0 (23.08)
+

@@ -1,0 +1,240 @@
+{
+  "name": "c48a620f922c3090b5a3",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "height": 54,
+        "width": 1024,
+        "x": 0,
+        "y": 108,
+        "z": 0
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "multiRowCard",
+    "projections": {
+      "Values": [
+        {
+          "queryRef": "waqi api - blackwall.rxs.obs.msg.iaqi.t.t"
+        },
+        {
+          "queryRef": "waqi api - blackwall.rxs.obs.msg.iaqi.h.t"
+        },
+        {
+          "queryRef": "waqi api - blackwall.rxs.obs.msg.iaqi.p.t"
+        },
+        {
+          "queryRef": "waqi api - blackwall.rxs.obs.msg.iaqi.no2.t"
+        },
+        {
+          "queryRef": "waqi api - blackwall.rxs.obs.msg.iaqi.pm10.t"
+        },
+        {
+          "queryRef": "waqi api - blackwall.rxs.obs.msg.iaqi.pm25.t"
+        },
+        {
+          "queryRef": "waqi api - blackwall.rxs.obs.msg.iaqi.w.t"
+        },
+        {
+          "queryRef": "waqi api - blackwall.rxs.obs.msg.iaqi.wg.t"
+        }
+      ]
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "w",
+          "Entity": "waqi api - blackwall",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "w"
+              }
+            },
+            "Property": "rxs.obs.msg.iaqi.t.t"
+          },
+          "Name": "waqi api - blackwall.rxs.obs.msg.iaqi.t.t",
+          "NativeReferenceName": "rxs.obs.msg.iaqi.t.t"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "w"
+              }
+            },
+            "Property": "rxs.obs.msg.iaqi.h.t"
+          },
+          "Name": "waqi api - blackwall.rxs.obs.msg.iaqi.h.t",
+          "NativeReferenceName": "rxs.obs.msg.iaqi.h.t"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "w"
+              }
+            },
+            "Property": "rxs.obs.msg.iaqi.p.t"
+          },
+          "Name": "waqi api - blackwall.rxs.obs.msg.iaqi.p.t",
+          "NativeReferenceName": "rxs.obs.msg.iaqi.p.t"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "w"
+              }
+            },
+            "Property": "rxs.obs.msg.iaqi.no2.t"
+          },
+          "Name": "waqi api - blackwall.rxs.obs.msg.iaqi.no2.t",
+          "NativeReferenceName": "rxs.obs.msg.iaqi.no2.t"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "w"
+              }
+            },
+            "Property": "rxs.obs.msg.iaqi.pm10.t"
+          },
+          "Name": "waqi api - blackwall.rxs.obs.msg.iaqi.pm10.t",
+          "NativeReferenceName": "rxs.obs.msg.iaqi.pm10.t"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "w"
+              }
+            },
+            "Property": "rxs.obs.msg.iaqi.pm25.t"
+          },
+          "Name": "waqi api - blackwall.rxs.obs.msg.iaqi.pm25.t",
+          "NativeReferenceName": "rxs.obs.msg.iaqi.pm25.t"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "w"
+              }
+            },
+            "Property": "rxs.obs.msg.iaqi.w.t"
+          },
+          "Name": "waqi api - blackwall.rxs.obs.msg.iaqi.w.t",
+          "NativeReferenceName": "rxs.obs.msg.iaqi.w.t"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "w"
+              }
+            },
+            "Property": "rxs.obs.msg.iaqi.wg.t"
+          },
+          "Name": "waqi api - blackwall.rxs.obs.msg.iaqi.wg.t",
+          "NativeReferenceName": "rxs.obs.msg.iaqi.wg.t"
+        }
+      ],
+      "OrderBy": [
+        {
+          "Direction": 1,
+          "Expression": {
+            "Column": {
+              "Expression": {
+                "SourceRef": {
+                  "Source": "w"
+                }
+              },
+              "Property": "rxs.obs.msg.iaqi.t.t"
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true,
+    "hasDefaultSort": true,
+    "objects": {
+      "cardTitle": [
+        {
+          "properties": {
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 9,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "14D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "categoryLabels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "vcObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "parentGroupName": "e0f9f0f633ba010cc7c6"
+}

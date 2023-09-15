@@ -1,0 +1,214 @@
+{
+  "name": "3d33c34e0e697486b8ea",
+  "layouts": [
+    {
+      "id": 0,
+      "position": {
+        "height": 108,
+        "width": 1024,
+        "x": 0,
+        "y": 0,
+        "z": 1000
+      }
+    }
+  ],
+  "singleVisual": {
+    "visualType": "multiRowCard",
+    "projections": {
+      "Values": [
+        {
+          "queryRef": "waqi api - blackwall.rxs.obs.msg.city.name"
+        },
+        {
+          "queryRef": "Sum(waqi api - blackwall.temp)"
+        },
+        {
+          "queryRef": "Sum(waqi api - blackwall.humidity)"
+        },
+        {
+          "queryRef": "Sum(waqi api - blackwall.pressure)"
+        },
+        {
+          "queryRef": "Sum(waqi api - blackwall.no2)"
+        },
+        {
+          "queryRef": "Sum(waqi api - blackwall.pm10)"
+        },
+        {
+          "queryRef": "Sum(waqi api - blackwall.pm25)"
+        },
+        {
+          "queryRef": "Sum(waqi api - blackwall.wind)"
+        },
+        {
+          "queryRef": "Sum(waqi api - blackwall.gust)"
+        }
+      ]
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "w",
+          "Entity": "waqi api - blackwall",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "w"
+              }
+            },
+            "Property": "rxs.obs.msg.city.name"
+          },
+          "Name": "waqi api - blackwall.rxs.obs.msg.city.name",
+          "NativeReferenceName": "rxs.obs.msg.city.name"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "w"
+              }
+            },
+            "Property": "temp"
+          },
+          "Name": "Sum(waqi api - blackwall.temp)",
+          "NativeReferenceName": "temp"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "w"
+              }
+            },
+            "Property": "humidity"
+          },
+          "Name": "Sum(waqi api - blackwall.humidity)",
+          "NativeReferenceName": "humidity"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "w"
+              }
+            },
+            "Property": "pressure"
+          },
+          "Name": "Sum(waqi api - blackwall.pressure)",
+          "NativeReferenceName": "pressure"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "w"
+              }
+            },
+            "Property": "no2"
+          },
+          "Name": "Sum(waqi api - blackwall.no2)",
+          "NativeReferenceName": "no2"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "w"
+              }
+            },
+            "Property": "pm10"
+          },
+          "Name": "Sum(waqi api - blackwall.pm10)",
+          "NativeReferenceName": "pm10"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "w"
+              }
+            },
+            "Property": "pm25"
+          },
+          "Name": "Sum(waqi api - blackwall.pm25)",
+          "NativeReferenceName": "pm25"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "w"
+              }
+            },
+            "Property": "wind"
+          },
+          "Name": "Sum(waqi api - blackwall.wind)",
+          "NativeReferenceName": "wind"
+        },
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "w"
+              }
+            },
+            "Property": "gust"
+          },
+          "Name": "Sum(waqi api - blackwall.gust)",
+          "NativeReferenceName": "gust"
+        }
+      ],
+      "OrderBy": [
+        {
+          "Direction": 1,
+          "Expression": {
+            "Column": {
+              "Expression": {
+                "SourceRef": {
+                  "Source": "w"
+                }
+              },
+              "Property": "rxs.obs.msg.city.name"
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true,
+    "hasDefaultSort": true,
+    "objects": {
+      "cardTitle": [
+        {
+          "properties": {
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 9,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "14D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "parentGroupName": "e0f9f0f633ba010cc7c6"
+}

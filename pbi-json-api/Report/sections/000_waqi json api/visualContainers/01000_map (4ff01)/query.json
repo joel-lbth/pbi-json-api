@@ -1,0 +1,236 @@
+{
+  "Commands": [
+    {
+      "SemanticQueryDataShapeCommand": {
+        "Query": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "w",
+              "Entity": "waqi api - blackwall",
+              "Type": 0
+            }
+          ],
+          "Select": [
+            {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "w"
+                  }
+                },
+                "Property": "latitude"
+              },
+              "Name": "waqi api - blackwall.latitude",
+              "NativeReferenceName": "latitude"
+            },
+            {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Source": "w"
+                  }
+                },
+                "Property": "longitude"
+              },
+              "Name": "waqi api - blackwall.longitude",
+              "NativeReferenceName": "longitude"
+            },
+            {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Source": "w"
+                      }
+                    },
+                    "Property": "no2"
+                  }
+                },
+                "Function": 0
+              },
+              "Name": "Sum(waqi api - blackwall.no2)",
+              "NativeReferenceName": "Sum of no2"
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "w"
+                          }
+                        },
+                        "Property": "rxs.obs.msg.iaqi.t.t"
+                      }
+                    },
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "w"
+                          }
+                        },
+                        "Property": "rxs.obs.msg.iaqi.h.t"
+                      }
+                    },
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "w"
+                          }
+                        },
+                        "Property": "rxs.obs.msg.iaqi.p.t"
+                      }
+                    },
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "w"
+                          }
+                        },
+                        "Property": "rxs.obs.msg.iaqi.no2.t"
+                      }
+                    },
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "w"
+                          }
+                        },
+                        "Property": "rxs.obs.msg.iaqi.pm10.t"
+                      }
+                    },
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "w"
+                          }
+                        },
+                        "Property": "rxs.obs.msg.iaqi.pm25.t"
+                      }
+                    },
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "w"
+                          }
+                        },
+                        "Property": "rxs.obs.msg.iaqi.w.t"
+                      }
+                    },
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "w"
+                          }
+                        },
+                        "Property": "rxs.obs.msg.iaqi.wg.t"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "datetime'2023-09-15T11:00:00'"
+                        }
+                      },
+                      {
+                        "Literal": {
+                          "Value": "datetime'2023-09-15T11:00:00'"
+                        }
+                      },
+                      {
+                        "Literal": {
+                          "Value": "datetime'2023-09-15T11:00:00'"
+                        }
+                      },
+                      {
+                        "Literal": {
+                          "Value": "datetime'2023-09-15T10:00:00'"
+                        }
+                      },
+                      {
+                        "Literal": {
+                          "Value": "datetime'2023-09-15T10:00:00'"
+                        }
+                      },
+                      {
+                        "Literal": {
+                          "Value": "datetime'2023-09-15T10:00:00'"
+                        }
+                      },
+                      {
+                        "Literal": {
+                          "Value": "datetime'2023-09-14T20:00:00'"
+                        }
+                      },
+                      {
+                        "Literal": {
+                          "Value": "datetime'2023-09-14T21:00:00'"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ],
+          "OrderBy": [
+            {
+              "Direction": 2,
+              "Expression": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Source": "w"
+                        }
+                      },
+                      "Property": "no2"
+                    }
+                  },
+                  "Function": 0
+                }
+              }
+            }
+          ]
+        },
+        "Binding": {
+          "Primary": {
+            "Groupings": [
+              {
+                "Projections": [
+                  0,
+                  1,
+                  2
+                ]
+              }
+            ]
+          },
+          "DataReduction": {
+            "DataVolume": 4,
+            "Primary": {
+              "Top": {}
+            }
+          },
+          "Version": 1
+        },
+        "ExecutionMetricsKind": 1
+      }
+    }
+  ]
+}

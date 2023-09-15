@@ -1,0 +1,341 @@
+{
+  "objects": {
+    "cardTitle": [
+      {
+        "properties": {
+          "color": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "ThemeDataColor": {
+                    "ColorId": 9,
+                    "Percent": 0
+                  }
+                }
+              }
+            }
+          },
+          "fontSize": {
+            "expr": {
+              "Literal": {
+                "Value": "14D"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "projectionOrdering": {
+    "Values": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ]
+  },
+  "queryMetadata": {
+    "Select": [
+      {
+        "Restatement": "rxs.obs.msg.city.name",
+        "Name": "waqi api - blackwall.rxs.obs.msg.city.name",
+        "Type": 2048
+      },
+      {
+        "Restatement": "temp",
+        "Name": "Sum(waqi api - blackwall.temp)",
+        "Type": 1
+      },
+      {
+        "Restatement": "humidity",
+        "Name": "Sum(waqi api - blackwall.humidity)",
+        "Type": 1,
+        "Format": "0"
+      },
+      {
+        "Restatement": "pressure",
+        "Name": "Sum(waqi api - blackwall.pressure)",
+        "Type": 1
+      },
+      {
+        "Restatement": "no2",
+        "Name": "Sum(waqi api - blackwall.no2)",
+        "Type": 1
+      },
+      {
+        "Restatement": "pm10",
+        "Name": "Sum(waqi api - blackwall.pm10)",
+        "Type": 3,
+        "Format": "0"
+      },
+      {
+        "Restatement": "pm25",
+        "Name": "Sum(waqi api - blackwall.pm25)",
+        "Type": 3,
+        "Format": "0"
+      },
+      {
+        "Restatement": "wind",
+        "Name": "Sum(waqi api - blackwall.wind)",
+        "Type": 1
+      },
+      {
+        "Restatement": "gust",
+        "Name": "Sum(waqi api - blackwall.gust)",
+        "Type": 1
+      }
+    ]
+  },
+  "visualElements": [
+    {
+      "DataRoles": [
+        {
+          "Name": "Values",
+          "Projection": 0,
+          "isActive": false
+        },
+        {
+          "Name": "Values",
+          "Projection": 1,
+          "isActive": false
+        },
+        {
+          "Name": "Values",
+          "Projection": 2,
+          "isActive": false
+        },
+        {
+          "Name": "Values",
+          "Projection": 3,
+          "isActive": false
+        },
+        {
+          "Name": "Values",
+          "Projection": 4,
+          "isActive": false
+        },
+        {
+          "Name": "Values",
+          "Projection": 5,
+          "isActive": false
+        },
+        {
+          "Name": "Values",
+          "Projection": 6,
+          "isActive": false
+        },
+        {
+          "Name": "Values",
+          "Projection": 7,
+          "isActive": false
+        },
+        {
+          "Name": "Values",
+          "Projection": 8,
+          "isActive": false
+        }
+      ]
+    }
+  ],
+  "selects": [
+    {
+      "displayName": "rxs.obs.msg.city.name",
+      "queryName": "waqi api - blackwall.rxs.obs.msg.city.name",
+      "roles": {
+        "Values": true
+      },
+      "sort": 1,
+      "sortOrder": 0,
+      "type": {
+        "category": null,
+        "underlyingType": 1
+      },
+      "expr": {
+        "Column": {
+          "Expression": {
+            "SourceRef": {
+              "Entity": "waqi api - blackwall"
+            }
+          },
+          "Property": "rxs.obs.msg.city.name"
+        }
+      }
+    },
+    {
+      "displayName": "temp",
+      "queryName": "Sum(waqi api - blackwall.temp)",
+      "roles": {
+        "Values": true
+      },
+      "type": {
+        "category": null,
+        "underlyingType": 259
+      },
+      "expr": {
+        "Column": {
+          "Expression": {
+            "SourceRef": {
+              "Entity": "waqi api - blackwall"
+            }
+          },
+          "Property": "temp"
+        }
+      }
+    },
+    {
+      "displayName": "humidity",
+      "format": "0",
+      "queryName": "Sum(waqi api - blackwall.humidity)",
+      "roles": {
+        "Values": true
+      },
+      "type": {
+        "category": null,
+        "underlyingType": 259
+      },
+      "expr": {
+        "Column": {
+          "Expression": {
+            "SourceRef": {
+              "Entity": "waqi api - blackwall"
+            }
+          },
+          "Property": "humidity"
+        }
+      }
+    },
+    {
+      "displayName": "pressure",
+      "queryName": "Sum(waqi api - blackwall.pressure)",
+      "roles": {
+        "Values": true
+      },
+      "type": {
+        "category": null,
+        "underlyingType": 259
+      },
+      "expr": {
+        "Column": {
+          "Expression": {
+            "SourceRef": {
+              "Entity": "waqi api - blackwall"
+            }
+          },
+          "Property": "pressure"
+        }
+      }
+    },
+    {
+      "displayName": "no2",
+      "queryName": "Sum(waqi api - blackwall.no2)",
+      "roles": {
+        "Values": true
+      },
+      "type": {
+        "category": null,
+        "underlyingType": 259
+      },
+      "expr": {
+        "Column": {
+          "Expression": {
+            "SourceRef": {
+              "Entity": "waqi api - blackwall"
+            }
+          },
+          "Property": "no2"
+        }
+      }
+    },
+    {
+      "displayName": "pm10",
+      "format": "0",
+      "queryName": "Sum(waqi api - blackwall.pm10)",
+      "roles": {
+        "Values": true
+      },
+      "type": {
+        "category": null,
+        "underlyingType": 260
+      },
+      "expr": {
+        "Column": {
+          "Expression": {
+            "SourceRef": {
+              "Entity": "waqi api - blackwall"
+            }
+          },
+          "Property": "pm10"
+        }
+      }
+    },
+    {
+      "displayName": "pm25",
+      "format": "0",
+      "queryName": "Sum(waqi api - blackwall.pm25)",
+      "roles": {
+        "Values": true
+      },
+      "type": {
+        "category": null,
+        "underlyingType": 260
+      },
+      "expr": {
+        "Column": {
+          "Expression": {
+            "SourceRef": {
+              "Entity": "waqi api - blackwall"
+            }
+          },
+          "Property": "pm25"
+        }
+      }
+    },
+    {
+      "displayName": "wind",
+      "queryName": "Sum(waqi api - blackwall.wind)",
+      "roles": {
+        "Values": true
+      },
+      "type": {
+        "category": null,
+        "underlyingType": 259
+      },
+      "expr": {
+        "Column": {
+          "Expression": {
+            "SourceRef": {
+              "Entity": "waqi api - blackwall"
+            }
+          },
+          "Property": "wind"
+        }
+      }
+    },
+    {
+      "displayName": "gust",
+      "queryName": "Sum(waqi api - blackwall.gust)",
+      "roles": {
+        "Values": true
+      },
+      "type": {
+        "category": null,
+        "underlyingType": 259
+      },
+      "expr": {
+        "Column": {
+          "Expression": {
+            "SourceRef": {
+              "Entity": "waqi api - blackwall"
+            }
+          },
+          "Property": "gust"
+        }
+      }
+    }
+  ]
+}

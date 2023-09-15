@@ -1,0 +1,185 @@
+{
+  "objects": {
+    "mapStyles": [
+      {
+        "properties": {
+          "mapTheme": {
+            "expr": {
+              "Literal": {
+                "Value": "'road'"
+              }
+            }
+          },
+          "showLabels": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "bubbles": [
+      {
+        "properties": {
+          "bubbleSize": {
+            "expr": {
+              "Literal": {
+                "Value": "10L"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "dataPoint": [
+      {
+        "properties": {
+          "showAllDataPoints": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          },
+          "fill": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "ThemeDataColor": {
+                    "ColorId": 4,
+                    "Percent": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "projectionOrdering": {
+    "Y": [
+      0
+    ],
+    "X": [
+      1
+    ],
+    "Size": [
+      2
+    ]
+  },
+  "queryMetadata": {
+    "Select": [
+      {
+        "Restatement": "latitude",
+        "Name": "waqi api - victoria park.latitude",
+        "Type": 1
+      },
+      {
+        "Restatement": "longitude",
+        "Name": "waqi api - victoria park.longitude",
+        "Type": 1
+      },
+      {
+        "Restatement": "Sum of no2",
+        "Name": "Sum(waqi api - victoria park.no2)",
+        "Type": 1
+      }
+    ]
+  },
+  "visualElements": [
+    {
+      "DataRoles": [
+        {
+          "Name": "Y",
+          "Projection": 0,
+          "isActive": false
+        },
+        {
+          "Name": "X",
+          "Projection": 1,
+          "isActive": false
+        },
+        {
+          "Name": "Size",
+          "Projection": 2,
+          "isActive": false
+        }
+      ]
+    }
+  ],
+  "selects": [
+    {
+      "displayName": "latitude",
+      "queryName": "waqi api - victoria park.latitude",
+      "roles": {
+        "Y": true
+      },
+      "type": {
+        "category": null,
+        "underlyingType": 259
+      },
+      "expr": {
+        "Column": {
+          "Expression": {
+            "SourceRef": {
+              "Entity": "waqi api - victoria park"
+            }
+          },
+          "Property": "latitude"
+        }
+      }
+    },
+    {
+      "displayName": "longitude",
+      "queryName": "waqi api - victoria park.longitude",
+      "roles": {
+        "X": true
+      },
+      "type": {
+        "category": null,
+        "underlyingType": 259
+      },
+      "expr": {
+        "Column": {
+          "Expression": {
+            "SourceRef": {
+              "Entity": "waqi api - victoria park"
+            }
+          },
+          "Property": "longitude"
+        }
+      }
+    },
+    {
+      "displayName": "Sum of no2",
+      "queryName": "Sum(waqi api - victoria park.no2)",
+      "roles": {
+        "Size": true
+      },
+      "sort": 2,
+      "sortOrder": 0,
+      "type": {
+        "category": null,
+        "underlyingType": 259
+      },
+      "expr": {
+        "Aggregation": {
+          "Expression": {
+            "Column": {
+              "Expression": {
+                "SourceRef": {
+                  "Entity": "waqi api - victoria park"
+                }
+              },
+              "Property": "no2"
+            }
+          },
+          "Function": 0
+        }
+      }
+    }
+  ]
+}
